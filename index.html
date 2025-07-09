@@ -1,28 +1,47 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PWA Sederhana</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="manifest" href="manifest.json">
-    <link rel="stylesheet" href="">
-    <meta name="theme-color" content="#317EFB"/>
-    <link rel="apple-touch-icon" href="icons/icon-192x192.png">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#317EFB"/>
+  <link rel="manifest" href="manifest.json" />
+  <title>Aplikasi Sederhana PWA</title>
 </head>
 <body>
-    <header>
-        <h1>PWA Sederhana</h1>
-    </header>
-    <main>
-        <p>Ini adalah PWA sederhana Anda. Coba matikan koneksi internet Anda dan segarkan halaman ini!</p>
-        <button id="offlineStatus">Periksa Status Offline</button>
-        <p id="statusMessage"></p>
-    </main>
-    <footer>
-        <p>&copy; 2025 PWA Sederhana</p>
-    </footer>
+  <h1>Halo Dunia!</h1>
+  <p>Ini adalah aplikasi web sederhana berbasis PWA.</p>
+  <button onclick="installApp()">Pasang Aplikasi</button>
 
-    <script src="app.js"></script>
+  <script>
+    let deferredPrompt;
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+    });
+
+    function installApp() {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then((choiceResult) => {
+          if (choiceResult.outcome === 'accepted') {
+            console.log('Pengguna menerima pemasangan.');
+          } else {
+            console.log('Pengguna menolak pemasangan.');
+          }
+          deferredPrompt = null;
+        });
+      }
+    }
+
+    // Daftarkan Service Worker
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('service.js').then(() => {
+        console.log('Service Worker berhasil didaftarkan.');
+      }).catch(error => {
+        console.error('Service Worker gagal didaftarkan:', error);
+      });
+    }
+  </script>
 </body>
 </html>
